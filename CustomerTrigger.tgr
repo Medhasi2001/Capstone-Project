@@ -1,0 +1,15 @@
+trigger CustomerTrigger on Customer__c (after update) {
+	List<Billing__c> billingRecords=new List<Billing__c>();
+    for(Customer__c cust:Trigger.new){
+        if(cust.Active__c==true && Trigger.oldmap.get(cust.id).Active__c==false){
+            Billing__c bill=new Billing__c();
+            bill.Status__c='Paid';
+            bill.Amount_Paid__c=1000000;
+            bill.Customer__c=cust.Id;
+            billingRecords.add(bill);
+        }
+    }
+    if(billingRecords!=null){
+        insert billingRecords;
+    }
+}
